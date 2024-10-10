@@ -118,3 +118,28 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data.get("password"))
         user.save()
         return user
+
+
+class RequestPasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=32)
+    confirm_password = serializers.CharField(max_length=32)
+
+    def validate(self, attrs: dict):
+        password = attrs.get("password")
+        confirm_password = attrs.get("confirm_password")
+
+        if password != confirm_password:
+            raise serializers.ValidationError(
+                detail={"password": ["Passwords missmatch."]},
+                code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Validate the password
+        validate_password(password)
+        validate_password(confirm_password)
+
+        return attrs

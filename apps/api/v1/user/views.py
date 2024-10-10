@@ -1,8 +1,10 @@
-from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiExample, extend_schema, inline_serializer
 from rest_framework import serializers, status
-from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,7 +16,10 @@ from apps.api.v1.user.schema import (
     UserNotFoundExample,
     UserNotFoundSchema,
 )
-from apps.api.v1.user.serializers import PasswordChangeSerializer, UserSerializer
+from apps.api.v1.user.serializers import (
+    PasswordChangeSerializer,
+    UserSerializer,
+)
 from apps.user.models import User
 from core.pagination import PagePaginator
 
@@ -131,7 +136,7 @@ class PasswordChangeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, *args, **kwargs):
-        user = get_object_or_404(get_user_model(), pk=self.request.user.pk)
+        user = get_object_or_404(User, pk=self.request.user.pk)
         password = self.request.data.get("password")
         new_password = self.request.data.get("new_password")
         if not user.check_password(password):

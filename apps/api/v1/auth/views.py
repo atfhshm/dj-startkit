@@ -1,6 +1,13 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from drf_spectacular.utils import OpenApiExample, extend_schema, inline_serializer
 from rest_framework import serializers, status
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -11,6 +18,8 @@ from apps.api.v1.auth.schema import INVALID_USER_REGISTER_SCHEMA
 from apps.user.models import User
 
 from .serializers import (
+    RequestPasswordResetSerializer,
+    ResetPasswordSerializer,
     TokenObtainPairResponseSerializer,
     TokenObtainPairSerializer,
     TokenRefreshResponseSerializer,
@@ -153,4 +162,64 @@ class UserRegisterView(APIView):
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# TODO: Implement magic link authentication
+class RequestPasswordResetView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = RequestPasswordResetSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.data["email"]
+        user = User.objects.filter(email=email).first()
+        if user:
+            token_generator = PasswordResetTokenGenerator()
+            token = token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+            # TODO: Use celery task
+            send_mail(
+                "Password Reset Request",
+                f"Use this link to reset your password: {settings.FRONTEND_URL}/auth/reset-password/{uid}/{token}/",
+                "from@example.com",
+                [user.email],
+                fail_silently=False,
+            )
+
+            return Response(
+                data={
+                    "detail": "A reset link has been sent to your email, please check it."
+                },
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                data={
+                    "detail": "A reset link has been sent to your email, please check it."
+                },
+                status=status.HTTP_200_OK,
+            )
+
+
+class ResetPasswordView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = ResetPasswordSerializer
+
+    def post(self, request, uidb64, token, *args, **kwargs):
+        user_id = urlsafe_base64_decode(uidb64).decode()
+        user = get_object_or_404(User, pk=user_id)
+
+        token_generator = PasswordResetTokenGenerator()
+        if not token_generator.check_token(user, token):
+            return Response(
+                {"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user.set_password(serializer.validated_data["password"])
+        user.save()
+
+        return Response(
+            {"detail": "Password has been reset."}, status=status.HTTP_200_OK
+        )

@@ -194,6 +194,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "user.User"
 
+# Frontend url
+FRONTEND_URL = env("FRONTEND_BASE_URL", cast=str, default="localhost:3000")
+
+# The password reset time is 2 hours
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 2
+
 # Redis
 REDIS_URL = env("REDIS_URL", cast="str", default="redis://redis:6379")
 

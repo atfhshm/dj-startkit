@@ -31,18 +31,18 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(max_length=32)
     new_password = serializers.CharField(max_length=32)
-    confirm_password = serializers.CharField(max_length=32)
+    confirm_new_password = serializers.CharField(max_length=32)
 
     class Meta:
         model = User
-        fields = ("password", "new_password", "confirm_password")
-        read_only_fields = ("new_password", "confirm_password")
+        fields = ("password", "new_password", "confirm_new_password")
+        read_only_fields = ("new_password", "confirm_new_password")
 
     def validate(self, attrs: dict):
         new_password = attrs.get("new_password")
-        confirm_password = attrs.get("confirm_password")
+        confirm_new_password = attrs.get("confirm_new_password")
 
-        if new_password != confirm_password:
+        if new_password != confirm_new_password:
             raise serializers.ValidationError(
                 detail={"new_password": ["Passwords missmatch."]},
                 code=status.HTTP_400_BAD_REQUEST,
@@ -54,3 +54,5 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
         if value:
             validate_password(value)
         return value
+
+
