@@ -11,7 +11,7 @@ from .views import (
 
 urlpatterns = [
     path(
-        "register",
+        "tokens/register",
         UserRegisterView.as_view(),
         name="register-user",
     ),
@@ -36,7 +36,7 @@ urlpatterns = [
         name="request-password-reset",
     ),
     path(
-        "reset-password/<uidb64>/<token>/",
+        "reset-password/<str:uidb64>/<str:token>/",
         ResetPasswordView.as_view(),
         name="reset-password",
     ),

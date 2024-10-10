@@ -14,7 +14,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-from apps.api.v1.auth.schema import INVALID_USER_REGISTER_SCHEMA
+from apps.api.v1.auth.schema import (
+    InvalidPasswordResetExample,
+    InvalidRegisterExample,
+    PasswordResetExample,
+)
 from apps.user.models import User
 
 from .serializers import (
@@ -142,7 +146,7 @@ class VerifyTokenView(TokenVerifyView):
             status_codes=[
                 status.HTTP_400_BAD_REQUEST,
             ],
-            value=INVALID_USER_REGISTER_SCHEMA,
+            value=InvalidRegisterExample,
             response_only=True,
         )
     ],
@@ -162,6 +166,25 @@ class UserRegisterView(APIView):
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    description="Request user password reset via email",
+    responses={
+        status.HTTP_200_OK: inline_serializer(
+            name="PasswordReset",
+            fields={"detail": serializers.CharField()},
+        )
+    },
+    examples=[
+        OpenApiExample(
+            name="ResetPassword",
+            status_codes=[
+                status.HTTP_200_OK,
+            ],
+            value=PasswordResetExample,
+            response_only=True,
+        )
+    ],
+)
 class RequestPasswordResetView(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = RequestPasswordResetSerializer
@@ -188,19 +211,50 @@ class RequestPasswordResetView(GenericAPIView):
 
             return Response(
                 data={
-                    "detail": "A reset link has been sent to your email, please check it."
+                    "detail": "A reset password email had been sent to the provided email."
                 },
                 status=status.HTTP_200_OK,
             )
         else:
             return Response(
                 data={
-                    "detail": "A reset link has been sent to your email, please check it."
+                    "detail": "A reset password email had been sent to the provided email."
                 },
                 status=status.HTTP_200_OK,
             )
 
 
+@extend_schema(
+    description="Reset user password endpoint with token and user validation",
+    responses={
+        status.HTTP_200_OK: None,
+        status.HTTP_400_BAD_REQUEST: ResetPasswordSerializer,
+        status.HTTP_404_NOT_FOUND: inline_serializer(
+            name="InvalidUser",
+            fields={
+                "detail": serializers.CharField(),
+                "code": serializers.CharField(),
+            },
+        ),
+    },
+    examples=[
+        OpenApiExample(
+            name="InvalidPasswordReset",
+            value=InvalidPasswordResetExample,
+            response_only=True,
+            status_codes=[status.HTTP_400_BAD_REQUEST],
+        ),
+        OpenApiExample(
+            name="InvalidUser",
+            status_codes=[status.HTTP_404_NOT_FOUND],
+            value={
+                "detail": "User not found",
+                "code": "user_not_found",
+            },
+            response_only=True,
+        ),
+    ],
+)
 class ResetPasswordView(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = ResetPasswordSerializer
@@ -223,3 +277,6 @@ class ResetPasswordView(GenericAPIView):
         return Response(
             {"detail": "Password has been reset."}, status=status.HTTP_200_OK
         )
+
+
+# TODO: Magic link authentication views

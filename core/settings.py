@@ -119,7 +119,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # DRF settings
-
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
@@ -133,6 +132,7 @@ REST_FRAMEWORK = {
 
 ACCESS_TOKEN_EXPIRY_MINUTES = env("ACCESS_TOKEN_EXPIRY_MINUTES", cast=int)
 REFRESH_TOKEN_EXPIRY_DAYS = env("REFRESH_TOKEN_EXPIRY_DAYS", cast=int)
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=ACCESS_TOKEN_EXPIRY_MINUTES),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=REFRESH_TOKEN_EXPIRY_DAYS),
@@ -148,7 +148,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://atfhshm.com",
         "email": "its.atfhshm@gmail.com",
     },
-    "SERVE_INCLUDE_SCHEMA": False,
+    "SERVE_INCLUDE_SCHEMA": True,
     "COMPONENT_SPLIT_REQUEST": True,
     "SWAGGER_UI_DIST": "SIDECAR",
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",

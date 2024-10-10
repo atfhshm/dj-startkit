@@ -1,8 +1,8 @@
 __all__ = [
-    "INVALID_USER_REGISTER_SCHEMA",
+    "InvalidRegisterExample",
 ]
 
-INVALID_USER_REGISTER_SCHEMA = {
+InvalidRegisterExample = {
     "first_name": ["This field is required."],
     "last_name": ["This field is required."],
     "email": ["A user with that email already exists.", "Enter a valid email address."],
@@ -15,7 +15,7 @@ INVALID_USER_REGISTER_SCHEMA = {
     ],
 }
 
-invalid_password_object = {
+InvalidPasswordExample = {
     "password": ["Invalid password."],
     "new_password": [
         "Passwords missmatch.",
@@ -25,9 +25,13 @@ invalid_password_object = {
     ],
 }
 
-invalid_password_reset_object = {
-    "password": ["Invalid password."],
-    "new_password": [
+PasswordResetExample = {
+    "detail": "A reset password email had been sent to the provided email."
+}
+
+InvalidPasswordResetExample = {
+    "password": ["Invalid password.", "Passwords missmatch"],
+    "confirm_password": [
         "Passwords missmatch.",
         "This password is too short. It must contain at least 8 characters.",
         "This password is too common.",
