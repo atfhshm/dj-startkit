@@ -54,5 +54,3 @@ class PasswordChangeSerializer(serializers.ModelSerializer):
         if value:
             validate_password(value)
         return value
-
-

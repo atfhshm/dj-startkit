@@ -41,8 +41,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_("active status"), default=True, db_index=True)
     date_joined = models.DateTimeField(_("date_joined"), auto_now_add=True)
     updated_at = models.DateTimeField(_("updated at"), auto_now=True)
-    # TODO: Add country field
-    # TODO: ADD is_verified field (the user is verified or not via email)
 
     objects = UserManager()
 
@@ -54,6 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = "users"
         verbose_name = _("user")
         verbose_name_plural = _("users")
+        ordering = ("-id",)
 
     def __str__(self) -> str:
         return f"{self.email}"

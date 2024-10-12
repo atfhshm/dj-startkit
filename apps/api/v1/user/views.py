@@ -4,6 +4,7 @@ from rest_framework import serializers, status
 from rest_framework.generics import (
     ListAPIView,
     RetrieveUpdateDestroyAPIView,
+    GenericAPIView,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -105,8 +106,6 @@ class UserListView(ListAPIView):
     pagination_class = PagePaginator
     permission_classes = [IsAuthenticated]
     filterset_class = UserFilter
-    ordering_fields = ["id", "date_joined"]
-    ordering = ["id"]
 
 
 @extend_schema(
@@ -151,3 +150,13 @@ class PasswordChangeView(APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetCurrentUserView(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        print("user is", self.request.user)
+        user = get_object_or_404(User, pk=request.user.pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)

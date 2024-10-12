@@ -2,6 +2,10 @@
 clean:
 	uv run pyclean .
 
+.PHONEY: format
+format:
+    uv run ruff format
+
 .PHONEY: dev
 dev:
 	uv run manage.py runserver

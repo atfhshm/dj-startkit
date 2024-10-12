@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     # native apps
+    "apps.api.apps.ApiConfig",
     "apps.user.apps.UserConfig",
 ]
 
