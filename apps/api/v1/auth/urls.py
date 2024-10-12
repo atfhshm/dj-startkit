@@ -1,18 +1,18 @@
 from django.urls import path
 
-from .views import (
+from apps.api.v1.auth.views import (
     RequestPasswordResetView,
     ResetPasswordView,
     TokenPairObtainView,
     TokenRefreshObtainView,
-    UserRegisterView,
+    RegisterUserView,
     VerifyTokenView,
 )
 
 urlpatterns = [
     path(
         "tokens/register",
-        UserRegisterView.as_view(),
+        RegisterUserView.as_view(),
         name="register-user",
     ),
     path(

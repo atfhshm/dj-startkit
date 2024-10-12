@@ -7,59 +7,46 @@ from apps.user.models import User
 
 __all__ = [
     "TokenObtainPairSerializer",
-    "TokenObtainPairResponseSerializer",
+    "TokenPairSerializer",
+    "TokenSerializer",
+    "InvalidTokenSerializer",
+    "InvalidCredentialsSerializer",
     "TokenRefreshResponseSerializer",
     "UserRegisterSerializer",
+    "RequestPasswordResetSerializer",
+    "ResetPasswordSerializer",
 ]
+
+
+class TokenObtainPairSerializer(serializers.Serializer):
+    login = serializers.CharField(min_length=3, max_length=128)
+    password = serializers.CharField(min_length=6, max_length=128)
+
+
+class TokenPairSerializer(serializers.Serializer):
+    access = serializers.CharField(max_length=132)
+    refresh = serializers.CharField(max_length=132)
+
+
+class InvalidCredentialsSerializer(serializers.Serializer):
+    detail = serializers.CharField()
 
 
 class TokenSerializer(serializers.Serializer):
     token = serializers.CharField(max_length=6, required=True)
 
 
-class TokenObtainPairSerializer(serializers.Serializer):
-    login = serializers.CharField(max_length=128)
-    password = serializers.CharField(max_length=128)
-
-
-class TokensSerializer(serializers.Serializer):
-    access = serializers.CharField(max_length=132)
-    refresh = serializers.CharField(max_length=132)
-
-
-class TokenObtainPairResponseSerializer(serializers.ModelSerializer):
-    tokens = serializers.SerializerMethodField()
-    phone_number = PhoneNumberField()
-
-    class Meta:
-        model = User
-        fields = (
-            "id",
-            "first_name",
-            "last_name",
-            "email",
-            "username",
-            "phone_number",
-            "avatar",
-            "is_active",
-            "date_joined",
-            "updated_at",
-            "tokens",
-        )
-
-    def get_tokens(self, obj) -> TokensSerializer:
-        refresh = RefreshToken.for_user(obj)
-        access = refresh.access_token
-
-        return {"access": str(access), "refresh": str(refresh)}
-
-
 class TokenRefreshResponseSerializer(serializers.Serializer):
     access = serializers.CharField()
 
 
+class InvalidTokenSerializer(serializers.Serializer):
+    detail = serializers.CharField()
+    code = serializers.CharField()
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
-    """User Registeration Serializer"""
+    """User Registration Serializer"""
 
     phone_number = PhoneNumberField()
     confirm_password = serializers.CharField(max_length=32)

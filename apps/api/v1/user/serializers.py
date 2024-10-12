@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PasswordChangeSerializer(serializers.ModelSerializer):
     """Change password serializer"""
 
-    password = serializers.CharField(max_length=32)
+    password = serializers.CharField(max_length=32, write_only=True)
     new_password = serializers.CharField(max_length=32)
     confirm_new_password = serializers.CharField(max_length=32)
 

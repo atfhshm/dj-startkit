@@ -26,7 +26,8 @@ CORS_ALLOW_ALL_ORIGINS = env("CORS_ALLOW_ALL_ORIGINS", cast=bool, default=True)
 # Application definition
 
 INSTALLED_APPS = [
-    # "daphne",
+    "storages",
+    # djang-native apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -34,7 +35,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # third-party apps
-    "storages",
     "rest_framework",
     "phonenumber_field",
     "channels",
@@ -42,8 +42,7 @@ INSTALLED_APPS = [
     "django_celery_results",
     "drf_spectacular",
     "drf_spectacular_sidecar",
-    # native apps
-    "apps.api.apps.ApiConfig",
+    # local apps
     "apps.user.apps.UserConfig",
 ]
 
@@ -58,7 +57,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "core.urls"
-
 
 TEMPLATES = [
     {
@@ -75,7 +73,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 # WSGI and ASGI Applications
 WSGI_APPLICATION = "core.wsgi.application"
@@ -139,7 +136,6 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=REFRESH_TOKEN_EXPIRY_DAYS),
 }
 
-
 SPECTACULAR_SETTINGS = {
     "TITLE": "Django Starterkit API",
     "DESCRIPTION": "Django Starterkit API schema and documentation.",
@@ -156,7 +152,6 @@ SPECTACULAR_SETTINGS = {
     "REDOC_DIST": "SIDECAR",
 }
 
-
 # Django silk settings (dev and staging only)
 if DEBUG:
     MIDDLEWARE.append(
@@ -166,7 +161,6 @@ if DEBUG:
         "silk",
     )
 
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -174,7 +168,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static assets (image, css, js, fonts, icons, etc.)
 
@@ -227,7 +220,6 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 
-
 # Emails
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -242,7 +234,6 @@ if not DEBUG:
     SERVER_EMAIL = env("SERVER_EMAIL", cast=str)
     EMAIL_USE_TLS = False
     EMAIL_USE_SSL = False
-
 
 # production staticfile and media file storage configuration
 if not DEBUG:

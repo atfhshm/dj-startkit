@@ -4,6 +4,10 @@ from django_filters import rest_framework as drf
 
 from apps.user.models import User
 
+__all__ = [
+    "UserFilter",
+]
+
 
 class UserFilter(drf.FilterSet):
     o = drf.OrderingFilter(fields=(("id", "id"), ("date_joined", "date_joined")))

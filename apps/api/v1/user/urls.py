@@ -8,11 +8,6 @@ from apps.api.v1.user.views import (
 
 urlpatterns = [
     path(
-        "change-password",
-        PasswordChangeView.as_view(),
-        name="change-password",
-    ),
-    path(
         "<str:email>",
         RetrieveUpdateDestroyUserView.as_view(),
         name="user-crud",
@@ -21,5 +16,10 @@ urlpatterns = [
         "",
         UserListView.as_view(),
         name="list-users",
+    ),
+    path(
+        "change-password",
+        PasswordChangeView.as_view(),
+        name="change-password",
     ),
 ]
