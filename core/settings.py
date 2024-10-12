@@ -42,8 +42,10 @@ INSTALLED_APPS = [
     "django_celery_results",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "django_countries",
     # local apps
     "apps.user.apps.UserConfig",
+    "apps.organization.apps.OrganizationConfig",
 ]
 
 MIDDLEWARE = [
@@ -147,6 +149,7 @@ SPECTACULAR_SETTINGS = {
     },
     "SERVE_INCLUDE_SCHEMA": True,
     "COMPONENT_SPLIT_REQUEST": True,
+    "POSTPROCESSING_HOOKS": [],
     "SWAGGER_UI_DIST": "SIDECAR",
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
@@ -191,8 +194,19 @@ AUTH_USER_MODEL = "user.User"
 # Frontend url
 FRONTEND_URL = env("FRONTEND_BASE_URL", cast=str, default="localhost:3000")
 
-# The password reset time is 2 hours
-PASSWORD_RESET_TIMEOUT = 60 * 60 * 2
+# The password reset time in seconds
+PASSWORD_RESET_TIMEOUT = env(
+    "PASSWORD_RESET_TIMEOUT",
+    cast=int,
+    default=(60 * 60 * 2),
+)
+
+# The organization invitation expiry duration
+INVITATION_EXPIRY_MINUTES = env(
+    "INVITATION_EXPIRY_MINUTES",
+    cast=int,
+    default=(1 * 60 * 24),
+)
 
 # Redis
 REDIS_URL = env("REDIS_URL", cast="str", default="redis://redis:6379")

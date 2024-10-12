@@ -1,12 +1,18 @@
 from django.urls import path
 
 from apps.api.v1.user.views import (
+    GetCurrentUserView,
     PasswordChangeView,
     RetrieveUpdateDestroyUserView,
     UserListView,
 )
 
 urlpatterns = [
+    path(
+        "me",
+        GetCurrentUserView.as_view(),
+        name="get-auth-user",
+    ),
     path(
         "<str:email>",
         RetrieveUpdateDestroyUserView.as_view(),

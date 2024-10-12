@@ -17,7 +17,7 @@ class PagePaginator(PageNumberPagination):
         return Response(
             {
                 "count": self.page.paginator.count,
-                "page_size": self.page_size,
+                "page_size": len(data),
                 "page_number": self.page.number,
                 "total_pages": self.page.paginator.num_pages,
                 "next": self.get_next_link(),

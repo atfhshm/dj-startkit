@@ -47,6 +47,7 @@ dev-dependencies = ["pyclean>=3.0.0"]
 
 [tool.coverage.run]
 branch = true
+source = ["."]
 omit = [
     "*/urls/*",
     "*/migrations/*",
@@ -67,6 +68,7 @@ omit = [
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
+fail_under = 80
 exclude_lines = [
     "def __unicode__",
     "if DEBUG",
@@ -75,10 +77,13 @@ exclude_lines = [
     "def __str__",
 ]
 
+[tool.coverage.html]
+directory = "htmlcov"
+
 [tool.pytest]
 DJANGO_SETTINGS_MODULE = "core.settings"
 python_files = "tests.py test_*.py *_tests.py"
-addopts = "-v --nomigrations --ignore=venv --cov=. --cov-report=html"
+addopts = "-v --nomigrations --ignore=venv --cov=. --cov-report=html --cov-report=term --cov-fail-under=80"
 
 [tool.uv.sources]
 django-starterkit = { workspace = true }

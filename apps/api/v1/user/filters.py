@@ -10,11 +10,12 @@ __all__ = [
 
 
 class UserFilter(drf.FilterSet):
-    o = drf.OrderingFilter(fields=(("id", "id"), ("date_joined", "date_joined")))
+    o = drf.OrderingFilter(fields=(("id", "id"),))
     name = drf.CharFilter(method="filter_name", label="name")
     email = drf.CharFilter(field_name="email", lookup_expr="icontains")
     username = drf.CharFilter(field_name="username", lookup_expr="icontains")
     phone_number = drf.CharFilter(field_name="phone_number", lookup_expr="icontains")
+    date_joined = drf.DateFromToRangeFilter()
 
     class Meta:
         model = User
